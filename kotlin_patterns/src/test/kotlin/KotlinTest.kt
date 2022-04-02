@@ -10,8 +10,6 @@ class KotlinTest {
         KotlinStaticSingleton.mKey = "KARL"
         println("--------${KotlinStaticSingleton.mKey}")
 
-        val phev2: Phev = KCar.Factory(KType.PHEV) as Phev
-        println("--------${phev2.replenishingEnergy()}")
 
     }
 }
