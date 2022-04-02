@@ -1,3 +1,5 @@
+package create
+
 object KotlinStaticSingleton {
     var mKey: String? = null
 }

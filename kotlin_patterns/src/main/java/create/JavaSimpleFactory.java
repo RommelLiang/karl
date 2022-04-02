@@ -1,3 +1,5 @@
+package create;
+
 public class JavaSimpleFactory {
 
     public interface Car {

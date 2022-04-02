@@ -1,11 +1,11 @@
-/*interface KCar {
+package create/*interface create.KCar {
     fun replenishingEnergy()
     companion object{
-        fun build(type: KType) {
+        fun build(type: create.KType) {
             when(type){
-                KType.GAS -> GasCar()
-                KType.EV -> EV()
-                KType.PHEV -> PHEV()
+                create.KType.GAS -> create.GasCar()
+                create.KType.create.EV -> create.EV()
+                create.KType.PHEV -> PHEV()
             }
         }
     }

@@ -1,3 +1,5 @@
+package create;
+
 public class JavaPrototype implements  Cloneable {
     private String name;
     private int age;

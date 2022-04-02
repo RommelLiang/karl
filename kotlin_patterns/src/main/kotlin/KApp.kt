@@ -1,3 +1,5 @@
+import create.*
+
 class KApp {
     val user1 = KotlinUserBuilder("Karl", 18)
     val user2 = KotlinUserBuilder(age = 18, name = "Karl")
@@ -17,19 +19,19 @@ class KApp {
     val copy1 = ontology.copy()
     val copy2 = ontology.copy(address = "BJ")
 
-    val gas :GasCar= KCar.build(KType.TypeGAS) as GasCar
-    val ev :EV= KCar.build(KType.TypeEV) as EV
+    val gas : GasCar = KCar.build(KType.TypeGAS) as GasCar
+    val ev : EV = KCar.build(KType.TypeEV) as EV
     val phev : PhEv = KCar.build(KType.TypePhev) as PhEv
-    val gas2: GasCar = KCar.Factory(KType.TypeGAS) as GasCar
+    val gas2: GasCar = KCar(KType.TypeGAS) as GasCar
     val ev2: EV = KCar.invoke(KType.TypeEV) as EV
-    val phev2: PhEv = KCar.Factory(KType.TypePhev) as PhEv
-    val gas3: GasCar = KCar.Factory<GasCar>() as GasCar
+    val phev2: PhEv = KCar(KType.TypePhev) as PhEv
+    val gas3: GasCar = KCar<GasCar>() as GasCar
     val ev3: EV = KCar.invoke<EV>() as EV
 
 }
 
 fun main() {
-    val phev2: PhEv = KCar.Factory(KType.TypePhev) as PhEv
+    val phev2: PhEv = KCar(KType.TypePhev) as PhEv
     println("--------${phev2.replenishingEnergy()}")
 }
 

@@ -1,3 +1,5 @@
+package create;
+
 public class JavaDoubleCheck {
     private volatile static JavaDoubleCheck singleton;
 
