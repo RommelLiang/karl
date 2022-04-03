@@ -1,3 +1,5 @@
+import create.JavaStaticSingleton
+import create.KotlinStaticSingleton
 import org.junit.Test
 
 class KotlinTest {

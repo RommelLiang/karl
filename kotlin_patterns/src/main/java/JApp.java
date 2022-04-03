@@ -1,3 +1,12 @@
+import behavioral.JavaIterable;
+import behavioral.JavaStrategy;
+import create.JavaBuilderUser;
+import create.JavaPrototype;
+import create.JavaSimpleFactory;
+import structural.JavaDecorator;
+
+import java.util.Iterator;
+
 public class JApp {
 
     private void fun() throws CloneNotSupportedException {
@@ -8,5 +17,11 @@ public class JApp {
 
         JavaSimpleFactory.GasCar gasCar = (JavaSimpleFactory.GasCar) new JavaSimpleFactory().new CarFactory().buildCar(JavaSimpleFactory.Type.GAS);
         JavaSimpleFactory.EV evCar = (JavaSimpleFactory.EV) new JavaSimpleFactory().new CarFactory().buildCar(JavaSimpleFactory.Type.EV);
+    }
+
+    public static void main(String[] args) {
+       // new JavaStrategy().run();
+        new JavaDecorator().test();
+
     }
 }
