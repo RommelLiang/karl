@@ -1,9 +1,12 @@
 package com.karl.network.net.adapter_fatory
 
 
+import android.util.Log
 import com.karl.network.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.suspendCancellableCoroutine
 import retrofit2.*
 import java.lang.reflect.ParameterizedType
@@ -34,11 +37,13 @@ class FlowCallAdapterFactory : CallAdapter.Factory() {
         }
 
         override fun adapt(call: Call<R>): Flow<R> {
-            return flow {
+            val flow: Flow<R> = flow {
+                Log.e("flwo", "${Thread.currentThread().name}")
                 emit(
                     suspendCancellableCoroutine {
                         call.enqueue(object : Callback<R> {
                             override fun onResponse(call: Call<R>, response: Response<R>) {
+                                Log.e("onResponse", "${Thread.currentThread().name}")
                                 it.resume(value = response.body()) {}
                             }
 
@@ -49,6 +54,7 @@ class FlowCallAdapterFactory : CallAdapter.Factory() {
                     }
                 )
             }
+            return flow.apply { this.flowOn(Dispatchers.IO) }
         }
 
     }

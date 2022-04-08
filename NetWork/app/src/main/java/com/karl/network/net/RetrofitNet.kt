@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import com.karl.network.bean.Repo
 import com.karl.network.net.adapter_fatory.FlowCallAdapterFactory
 import com.karl.network.net.adapter_fatory.LiveDataCallAdapterFactory
+import com.karl.network.net.interceptor.RequestInterceptor
 import kotlinx.coroutines.flow.Flow
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
@@ -13,15 +16,21 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 
-
 val retrofit: Retrofit by lazy(LazyThreadSafetyMode.NONE) {
-    Retrofit.Builder()
-        .baseUrl("https://api.github.com/")
-        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-        .addCallAdapterFactory(LiveDataCallAdapterFactory.INSTANCE)
-        .addCallAdapterFactory(FlowCallAdapterFactory.INSTANCE)
-        .addConverterFactory(GsonConverterFactory.create())
+    OkHttpClient.Builder()
+        .addInterceptor(RequestInterceptor())
+        .addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
+        .let {
+            Retrofit.Builder().client(it)
+                .baseUrl("https://api.github.com/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(LiveDataCallAdapterFactory.INSTANCE)
+                .addCallAdapterFactory(FlowCallAdapterFactory.INSTANCE)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+
 }
 
 interface GitHubService {
