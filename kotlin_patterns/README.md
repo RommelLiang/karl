@@ -31,7 +31,7 @@ object KotlinStaticSingleton {
 }
 ```
 
-如果你你讲Kotlin生成的字节码转换成Java文件，它的内容如下：
+如果你你将Kotlin生成的字节码转换成Java文件，它的内容如下：
 
 ```
 public final class KotlinStaticSingleton {
@@ -59,7 +59,7 @@ public final class KotlinStaticSingleton {
 
 ```
 
-这里不难看出object的关键字的作用：它会自动创建出 这个类以及它的一个单例。而且是以“懒汉模式”创建。
+这里不难看出object的关键字的作用：它会自动创建出 这个类以及它的一个单例。而且是以“饿汉模式”创建。
 
 而对于另外一个同时兼顾线程安全和性能的双重锁校验(的单例模式，Java中对应的实现如下：
 
