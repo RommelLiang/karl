@@ -1,9 +1,16 @@
 package com.karl.network
 
 
+import com.karl.network.bean.Repo
+import com.karl.network.net.GitHubService
+import com.karl.network.net.okHttpCall
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
 import org.junit.Test
+import java.io.IOException
 import java.util.*
 
 
@@ -14,25 +21,17 @@ import java.util.*
  */
 class ExampleUnitTest {
 
-    var head: Node? = null
-    var last: Node? = null
-
     @Test
     fun test() {
-        val pq = PriorityQueue<Int>()
-        pq.offer(1)
+        okHttpCall("RommelLiang")
+        Thread.sleep(20000)
+        val listRepos = GitHubService.service.listRepos("RommelLiang")
+
     }
 
 }
 
-class Node(val name: String) {
 
-    var next: Node? = null
-
-    override fun toString(): String {
-        return "${name}:{${next}}"
-    }
-}
 
 
 
