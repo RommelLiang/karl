@@ -1,11 +1,9 @@
-import behavioral.JavaIterable;
-import behavioral.JavaStrategy;
 import create.JavaBuilderUser;
 import create.JavaPrototype;
 import create.JavaSimpleFactory;
-import structural.JavaDecorator;
 
-import java.util.Iterator;
+import performance.Varargs;
+import structural.JavaDecorator;
 
 public class JApp {
 
@@ -22,6 +20,11 @@ public class JApp {
     public static void main(String[] args) {
        // new JavaStrategy().run();
         new JavaDecorator().test();
+        int[] nums = {1, 2, 3, 4};
+        new Varargs().numbers(nums);
+        for (int num : nums) {
+            System.out.print(num);
+        }
 
     }
 }
