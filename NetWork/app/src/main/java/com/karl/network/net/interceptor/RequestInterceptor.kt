@@ -14,8 +14,6 @@ class RequestInterceptor : Interceptor {
             Log.e("Request-Head:$headName","-----------${request.header(headName)}")
         }
         Log.e("Request-Body","-----------${request.body()}")
-
-
         return chain.proceed(request)
     }
 }
