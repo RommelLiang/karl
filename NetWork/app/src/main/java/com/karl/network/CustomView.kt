@@ -23,4 +23,6 @@ class CustomView(context: Context?, attrs: AttributeSet?) : View(context, attrs)
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
     }
+
+
 }

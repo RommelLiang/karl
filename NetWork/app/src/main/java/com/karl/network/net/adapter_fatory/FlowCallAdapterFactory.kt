@@ -38,12 +38,12 @@ class FlowCallAdapterFactory : CallAdapter.Factory() {
 
         override fun adapt(call: Call<R>): Flow<R> {
             val flow: Flow<R> = flow {
-                Log.e("flwo", "${Thread.currentThread().name}")
+                //Log.e("flwo", "${Thread.currentThread().name}")
                 emit(
                     suspendCancellableCoroutine {
                         call.enqueue(object : Callback<R> {
                             override fun onResponse(call: Call<R>, response: Response<R>) {
-                                Log.e("onResponse", "${Thread.currentThread().name}")
+                                //Log.e("onResponse", "${Thread.currentThread().name}")
                                 it.resume(value = response.body()) {}
                             }
 

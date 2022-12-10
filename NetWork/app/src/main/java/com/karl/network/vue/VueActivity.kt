@@ -3,6 +3,7 @@ package com.karl.network.vue
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -10,10 +11,20 @@ import android.webkit.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.karl.network.R
+import com.yanzhenjie.andserver.AndServer
+import com.yanzhenjie.andserver.Server
+import java.lang.Exception
+import java.net.InetAddress
+import java.util.*
+import java.util.concurrent.TimeUnit
+
 
 class VueActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var button: Button
+    private val jsInterface: JsInterface by lazy {
+        JsInterface(this)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -38,10 +49,48 @@ class VueActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vue)
+        initServer()
         initWeb()
     }
 
+    private fun initServer() {
+
+        Thread {
+            val server: Server = AndServer.webServer(this)
+                .port(8080)
+                .timeout(10, TimeUnit.SECONDS)
+                .inetAddress(InetAddress.getLocalHost())
+                .listener(object : Server.ServerListener {
+                    override fun onStarted() {
+                        runOnUiThread {
+                            webView.loadUrl("http://localhost:8080")
+                        }
+                    }
+
+                    override fun onStopped() {
+                        Log.e("--", "onStopped")
+                    }
+
+                    override fun onException(e: Exception?) {
+                        Log.e("--", "err")
+                    }
+
+                })
+                .build()
+            server.startup()
+        }.start()
+
+
+    }
+
+    override fun onDestroy() {
+        jsInterface.clear()
+        super.onDestroy()
+    }
+
     private fun initWeb() {
+
+        WebView.setWebContentsDebuggingEnabled(true)
         webView = findViewById<WebView>(R.id.web_view).apply {
             clearHistory()
             with(settings) {
@@ -50,9 +99,15 @@ class VueActivity : AppCompatActivity() {
                 useWideViewPort = true
                 loadWithOverviewMode = true
                 cacheMode = WebSettings.LOAD_NO_CACHE
+                databaseEnabled = true
+                allowFileAccessFromFileURLs = true
+                domStorageEnabled = true
+                allowFileAccess = true
+                allowUniversalAccessFromFileURLs = true
+
             }
-            addJavascriptInterface(JsInterface(), "App")
-            loadUrl("file:///android_asset/dist/index.html")
+            addJavascriptInterface(jsInterface, "LinkNative")
+            jsInterface.setWeb(this)
             webViewClient = Client()
             webChromeClient = ChromeClient()
         }
@@ -63,6 +118,7 @@ class VueActivity : AppCompatActivity() {
     }
 
     inner class ChromeClient : WebChromeClient() {
+
         override fun onJsAlert(
             view: WebView?,
             url: String?,
@@ -110,13 +166,19 @@ class VueActivity : AppCompatActivity() {
             }
             return super.onJsConfirm(view, url, message, result)
         }
+
     }
 
     inner class Client : WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
-            println("--------onPageStarted:$url")
+            Log.e("--------onPageStarted:$url", "")
             super.onPageFinished(view, url)
 
+        }
+
+        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
+
+            return super.shouldInterceptRequest(view, url)
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -129,13 +191,28 @@ class VueActivity : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
+            if (request?.url?.path == "/") {
+                view?.loadUrl("file:///android_asset/xcs-app-web/index.html")
+                return true
+            }
             val isInterface = request?.url?.let {
                 println("---------${it.scheme}")
                 println("---------${it.host}")
 
                 it.scheme.equals("js")
             }
-            if (isInterface == true) return isInterface
+
+            val isFile = request?.url?.let {
+
+                it.scheme.equals("file")
+            }
+
+
+            if (isInterface == true) {
+                return isInterface
+            } else if (isFile == true) {
+                return true;
+            }
             return super.shouldOverrideUrlLoading(view, request)
         }
 
@@ -151,5 +228,19 @@ class VueActivity : AppCompatActivity() {
             }
             super.onReceivedError(view, request, error)
         }
+
+        override fun onLoadResource(view: WebView?, url: String?) {
+            super.onLoadResource(view, url)
+        }
+
+    }
+
+
+    fun onServerStart(ip: String) {
+        webView.loadUrl(ip)
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 }
